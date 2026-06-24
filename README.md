@@ -5,8 +5,7 @@ you answers in real time, in your voice and personality. The avatar is powered b
 about you from a short bio you write.
 
 It uses [Tavus CVI](https://docs.tavus.io/sections/conversational-video-interface/overview-cvi)
-(Conversational Video Interface). For the technical deep-dive see [TAVUS.md](./TAVUS.md); for the
-project's goals and decisions see [CLAUDE.md](./CLAUDE.md).
+(Conversational Video Interface). For the technical deep-dive see [TAVUS.md](./TAVUS.md).
 
 ## The three phases
 
