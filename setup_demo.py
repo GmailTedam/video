@@ -172,6 +172,18 @@ def main() -> None:
     llm_model = os.environ.get("TAVUS_LLM_MODEL", "tavus-claude-haiku-4.5").strip()
     max_minutes = int(os.environ.get("DEMO_MAX_MINUTES", "10"))
 
+    # Optional bring-your-own LLM. When TAVUS_LLM_BASE_URL is set, point the
+    # persona's llm layer at an OpenAI-compatible streaming endpoint (e.g. a
+    # tunnelled local medical model) instead of a Tavus-hosted model. Tavus
+    # appends /chat/completions to base_url and calls it server-side, streaming
+    # tokens straight into TTS + render.
+    llm_layer = {"model": llm_model}
+    llm_base_url = os.environ.get("TAVUS_LLM_BASE_URL", "").strip()
+    if llm_base_url:
+        llm_layer["base_url"] = llm_base_url
+        llm_layer["api_key"] = os.environ.get("TAVUS_LLM_API_KEY", "").strip()
+        llm_layer["speculative_inference"] = True
+
     headers = {"x-api-key": api_key, "Content-Type": "application/json"}
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(name=name, knowledge=knowledge)
 
@@ -187,7 +199,7 @@ def main() -> None:
                 "default_replica_id": replica_id,
                 # turn-taking patience low: shorten the wait after the user stops before the avatar replies
                 "layers": {
-                    "llm": {"model": llm_model},
+                    "llm": llm_layer,
                     "conversational_flow": {"turn_taking_patience": "low"},
                 },
             })
